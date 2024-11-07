@@ -11,6 +11,4 @@ def getWeights(xzeros):
     return [w(xzeros, i) for i in range(len(xzeros))]
 
 
-ws = getWeights([1, 2, 3])
-for i in ws:
-    print(i)
+

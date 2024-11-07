@@ -1,11 +1,16 @@
 import numpy as np
 import scipy.integrate as integ
 
-def weight(x, xzeros, j):
+def w(xzeros, j):
     prod = np.polynomial.Polynomial.fromroots([xzeros[i] for i in range(len(xzeros)) if i!=j])
     bottom = prod(xzeros[j])
-    print(integ(prod))
+    top = prod.integ()
+    return top/bottom
+
+def getWeights(xzeros):
+    return [w(xzeros, i) for i in range(len(xzeros))]
 
 
-
-weight(7.4, [1, 2, 3], 2)
+ws = getWeights([1, 2, 3])
+for i in ws:
+    print(i)

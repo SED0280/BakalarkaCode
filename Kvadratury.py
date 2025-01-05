@@ -10,5 +10,13 @@ def w(xzeros, j):
 def getWeights(xzeros):
     return [w(xzeros, i) for i in range(len(xzeros))]
 
+def generateLegendrePolynomials(x, n):
+    alphak = 0
+    ret = [np.zeros(len(x)), np.ones(len(x))]
+    for k in range(2,n+1):
+        betak = 1/(4-k**(-2))
+        pi = (x-alphak)*ret[-1]-betak*ret[-2]
+        ret.append(pi)
+    return np.array(ret[1:])
 
 

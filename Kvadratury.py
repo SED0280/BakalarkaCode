@@ -5,7 +5,7 @@ import math
 def w(xzeros, j):
     prod = np.polynomial.Polynomial.fromroots([xzeros[i] for i in range(len(xzeros)) if i!=j])
     bottom = prod(xzeros[j])
-    top = prod.integ()
+    top = prod.integ()(1)-prod.integ()(-1)
     return top/bottom
 
 def getWeights(xzeros):
@@ -20,7 +20,7 @@ def generateLegendre(x, n):
         ret.append(pi)
     return np.array(ret[1:])
 
-def generateLegendrePoly(n):
+def generateLegendrePoly1(n):
     alphak = 0
     ret = [lambda x: 0, lambda x: 1]
     for k in range(2,n+1):
@@ -30,7 +30,7 @@ def generateLegendrePoly(n):
     return np.array(ret[1:])
 
 #print(generateLegendrePoly(2)[1](5))
-def generateLegendrePoly2(n):
+def generateLegendrePoly(n):
     ret = [lambda x: 0, lambda x: 1]
     for k in range(2,n+1):
         betak = 1/(4-(k-1)**(-2))
@@ -42,7 +42,7 @@ def generateLegendrePoly2(n):
         ret.append(pi)
     return np.array(ret[1:])
 
-def generateNormalLegendrePoly2(n):
+def generateNormalLegendrePoly(n):
     ret = [lambda x: 0, lambda x: 1]
     
     for k in range(2,n+1):
@@ -65,10 +65,27 @@ for k in range(2,n):
     alpha.append(0)
 alpha.append(0)
 
-a = np.diag(alpha)+ np.diag(beta,-1)+ np.diag(beta,1)
+import numpy as np
 
-print(beta)
+# Example of constructing a Jacobi matrix (for simplicity, this is a dummy example)
+J_n = np.array([[2, 1, 0, 0],
+                [1, 2, 1, 0],
+                [0, 1, 2, 1],
+                [0, 0, 1, 2]])
 
-aaaaaa = generateNormalLegendrePoly2(n)
+# Compute eigenvalues and eigenvectors
+eigenvalues, eigenvectors = np.linalg.eig(J_n)
 
-print(aaaaaa[5](1))
+# Sort eigenvalues (roots) and eigenvectors
+sorted_indices = np.argsort(eigenvalues)
+eigenvalues_sorted = eigenvalues[sorted_indices]
+eigenvectors_sorted = eigenvectors[:, sorted_indices]
+
+#print("Eigenvalues (roots):", eigenvalues_sorted[0])
+#print("Eigenvectors:", eigenvectors_sorted[:,0])
+
+#print("-------")
+#print("Eigenvalues (roots):", eigenvalues[2])
+#print("Eigenvectors:", eigenvectors[:,2])
+#print(np.dot(J_n,eigenvectors[2]))
+#print(np.dot(eigenvalues[2],eigenvectors[2]))

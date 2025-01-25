@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.integrate as integ
+from scipy.linalg import eigh_tridiagonal
 import math
 
 def w(xzeros, j):
@@ -20,16 +21,7 @@ def generateLegendre(x, n):
         ret.append(pi)
     return np.array(ret[1:])
 
-def generateLegendrePoly1(n):
-    alphak = 0
-    ret = [lambda x: 0, lambda x: 1]
-    for k in range(2,n+1):
-        betak = 1/(4-(k-1)**(-2)) # nebo mam pocitat pomoci integralu/G. kvadratur?
-        pi = (lambda x:(x-alphak)*ret[-1](x)-betak*ret[-2](x))
-        ret.append(pi)
-    return np.array(ret[1:])
 
-#print(generateLegendrePoly(2)[1](5))
 def generateLegendrePoly(n):
     ret = [lambda x: 0, lambda x: 1]
     for k in range(2,n+1):
@@ -65,27 +57,27 @@ for k in range(2,n):
     alpha.append(0)
 alpha.append(0)
 
-import numpy as np
+n=1000
+main_diag = np.zeros(n)  # main diagonal elements
+off_diag = np.array([ (1/(4-k**(-2)))**(1/2) for k in range(1,n)])      # off-diagonal elements
+print(off_diag)
+# Calculate eigenvalues and eigenvectors
+eigenvalues, eigenvectors = eigh_tridiagonal(main_diag, off_diag)
 
-# Example of constructing a Jacobi matrix (for simplicity, this is a dummy example)
-J_n = np.array([[2, 1, 0, 0],
-                [1, 2, 1, 0],
-                [0, 1, 2, 1],
-                [0, 0, 1, 2]])
+print("Eigenvalues (roots):", eigenvalues)
+print("Eigenvectors:", eigenvectors)
+Beta0 = 2
 
-# Compute eigenvalues and eigenvectors
-eigenvalues, eigenvectors = np.linalg.eig(J_n)
-
-# Sort eigenvalues (roots) and eigenvectors
-sorted_indices = np.argsort(eigenvalues)
-eigenvalues_sorted = eigenvalues[sorted_indices]
-eigenvectors_sorted = eigenvectors[:, sorted_indices]
-
-#print("Eigenvalues (roots):", eigenvalues_sorted[0])
-#print("Eigenvectors:", eigenvectors_sorted[:,0])
-
-#print("-------")
-#print("Eigenvalues (roots):", eigenvalues[2])
-#print("Eigenvectors:", eigenvectors[:,2])
+lam = Beta0 * eigenvectors[0]
+print("Lambda:", lam)
+print("Nodes:", eigenvalues)
 #print(np.dot(J_n,eigenvectors[2]))
 #print(np.dot(eigenvalues[2],eigenvectors[2]))
+
+f = lambda x: np.sin(x)
+print(lam*f(eigenvalues))
+
+
+I = sum(lam*f(eigenvalues))
+print("Integral of x^2 over <-1,1> = ", I)
+

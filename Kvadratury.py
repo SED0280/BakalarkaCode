@@ -10,7 +10,7 @@ def w(xzeros, j):
     return top/bottom
 
 def getWeights(xzeros):
-    return [w(xzeros, i) for i in range(len(xzeros))]
+    return np.array([w(xzeros, i) for i in range(len(xzeros))])
 
 def generateLegendre(x, n):
     alphak = 0
@@ -32,7 +32,7 @@ def generateNormalLegendre(x, n):
         ret.append(pi)
     return np.array(ret[1:])
 
-def generateLegendreOverInterval(x, n, a, b):
+def generateLegendreInterval(x, n, a, b):
     alphak = 0
     ret = [np.zeros(len(x)), np.ones(len(x))]
     for k in range(2,n+1):
@@ -42,7 +42,7 @@ def generateLegendreOverInterval(x, n, a, b):
         ret.append(pi)
     return np.array(ret[1:])
 
-def generateNormalLegendreOverInterval(x, n, a, b):
+def generateNormalLegendreInterval(x, n, a, b):
     ret = [np.zeros(len(x)), np.ones(len(x))]
     alphak = 0
     for k in range(2,n+1):
@@ -96,7 +96,62 @@ def JacobiGaussQuadLegendre(f, n):
     #print(np.dot(J_n,eigenvectors[:,0]))
     #print(np.dot(eigenvalues[0],eigenvectors[:,0]))
 
-    lam = Beta0 * eigenvectors[0]
+    lam = Beta0 * (eigenvectors[0]**2)
+    #lam = getWeights(eigenvalues)
+    #print(getWeights(eigenvalues))
+    #print(lam)
+
+    return sum(lam*f(eigenvalues))
+
+def JacobiGaussQuadLegendre1(f, n):
+    Beta0 = 2
+    main_diag = np.zeros(n)
+    off_diag = np.array([ math.sqrt(1/(4- k**(-2))) for k in range(1,n)])
+    
+    eigenvalues, eigenvectors = eigh_tridiagonal(main_diag, off_diag)
+
+    #J_n = np.diag(main_diag)
+    #J_n[1:,:len(J_n)-1]+=off_diag
+    #J_n[:len(J_n)-1,1:]+=off_diag
+    #print(np.dot(J_n,eigenvectors[:,0]))
+    #print(np.dot(eigenvalues[0],eigenvectors[:,0]))
+
+    #lam = Beta0 * eigenvectors[0]
+    lam = getWeights(eigenvalues)
+    #print(getWeights(eigenvalues))
+    #print(lam)
+
+    return sum(lam*f(eigenvalues))
+
+
+
+def JacobiGaussQuadLegendreInterval(f, n, a, b):
+    Beta0 = 2
+    main_diag = np.zeros(n)
+    off_diag = np.array([ math.sqrt(1/(4- k**(-2))) for k in range(1,n)])
+    
+    eigenvalues, eigenvectors = eigh_tridiagonal(main_diag, off_diag)
+
+    
+    eigenvalues = (a+b)/2 + (b-a)/2*eigenvalues
+    lam = Beta0 * (eigenvectors[0]**2) * (b-a)/2
+    #print(getWeights(eigenvalues))
+    #print(lam)
+
+    return sum(lam*f(eigenvalues))
+
+def JacobiGaussQuadLegendreInterval1(f, n, a, b):
+    Beta0 = 2
+    main_diag = np.zeros(n)
+    off_diag = np.array([ math.sqrt(1/(4- k**(-2))) for k in range(1,n)])
+    
+    eigenvalues, eigenvectors = eigh_tridiagonal(main_diag, off_diag)
+
+    
+    lam = (b-a)/2*getWeights(eigenvalues)
+    eigenvalues = (a+b)/2 + (b-a)/2*eigenvalues
+    #print(getWeights(eigenvalues))
+    #print(lam)
 
     return sum(lam*f(eigenvalues))
 

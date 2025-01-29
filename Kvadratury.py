@@ -155,13 +155,15 @@ def JacobiGaussQuadLegendreInterval1(f, n, a, b):
 
     return sum(lam*f(eigenvalues))
 
-#n=100
-#f = lambda x: x**2
 
-#print("Integral of x^2 over <-1,1> = ", JacobiGaussQuadLegendre(f, n))
-
-#J_n = np.diag(main_diag, off_diag)
-#print(J_n)
-#print(np.dot(J_n,eigenvectors[2]))
-#print(np.dot(eigenvalues[2],eigenvectors[2]))
-
+def generate2DLegendre(x, y, n):
+    alphak = 0
+    retx = [np.zeros(np.shape(x)), np.ones(np.shape(x))]
+    rety = [np.zeros(np.shape(y)), np.ones(np.shape(y))]
+    for k in range(2,n+1):
+        betak = 1/(4-(k-1)**(-2))
+        pix = ((x-alphak)*retx[-1]-betak*retx[-2])
+        piy = ((y-alphak)*retx[-1]-betak*retx[-2])
+        retx.append(pix)
+        rety.append(piy)
+    return np.array(np.array(retx[1:])+np.array(rety[1:]))

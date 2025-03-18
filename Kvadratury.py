@@ -18,20 +18,26 @@ def getWeights(xzeros):
 def legendre(x, n):
     alphak = 0
     ret = [np.zeros(len(x)), np.ones(len(x))]
-    for k in range(2, n+1):
-        betak = 1/(4-(k-1)**(-2))
+    for k in range(1, n+1):
+        betak = 1/(4-(k)**(-2))
         pi = (x-alphak)*ret[-1]-betak*ret[-2]
         ret.append(pi)
     return np.array(ret[1:])
 
 
 def legendre_normal(x, n):
-    ret = [np.zeros(len(x)), np.ones(len(x))]
+    beta0 = 2
+    ret = [np.zeros(len(x)), np.ones(len(x))/math.sqrt(beta0)]
     alphak = 0
+
+    betak = 1/(4-(1)**(-2))
+ 
+    pi = ((x - alphak) * ret[-1] - math.sqrt(beta0) * ret[-2])/math.sqrt(betak)
+    ret.append(pi)
+
     for k in range(2, n+1):
         betak_minus_one = 1/(4-(k-1)**(-2))
-        betak = 1/(4-(k-1)**(-2))
-
+        betak = 1/(4-(k)**(-2))
         pi = ((x - alphak) *
               ret[-1] - math.sqrt(betak_minus_one) * ret[-2])/math.sqrt(betak)
         ret.append(pi)
@@ -132,5 +138,3 @@ def quadrature_2d_int(f, nx, ny, a, b, c, d):
     Xweights, Yweights = np.meshgrid(xweights, yweights)
 
     return sum(sum(Xweights*Yweights*f(Xnodes, Ynodes)))
-
-

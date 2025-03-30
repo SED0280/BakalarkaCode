@@ -27,7 +27,7 @@ def legendre(x, n):
 
 def legendre_normal(x, n):
     beta0 = 2
-    ret = [np.zeros(len(x)), np.ones(len(x))/math.sqrt(beta0)]
+    ret = [np.zeros(x.shape), np.ones(x.shape)/math.sqrt(beta0)]
     alphak = 0
 
     betak = 1/(4-(1)**(-2))

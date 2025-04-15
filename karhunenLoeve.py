@@ -2,7 +2,7 @@ import numpy as np
 import integrations as integ
 
 
-def get_eigenfuntions(x, poly_count, node_count):
+def get_eigenfuntions(x, C, poly_count, node_count):
     def legnorm(x): return integ.legendre_normal(x, poly_count)
     nodes, weights = integ.nodes_weights(node_count)
 
@@ -14,9 +14,7 @@ def get_eigenfuntions(x, poly_count, node_count):
 
     # print(cov(nodesx1, nodesx2, nodesy1, nodesy2).shape)
     # print(values.shape)
-    dist_sq = (nodesx1 - nodesx2)**2 + (nodesy1 - nodesy2)**2
-    C_tensor = np.exp(-np.sqrt(dist_sq))
-
+    C_tensor = C(nodesx1, nodesx2, nodesy1, nodesy2)
     PW = (values * weights)
     A_tensor = np.einsum('kp,lq,pqrs,ir,js->klij', PW, PW,
                          C_tensor, PW, PW, optimize=True)

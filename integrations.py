@@ -50,23 +50,32 @@ def legendre_int(x, n, a, b):
     for k in range(2, n+1):
         betak = 1/(4-(k-1)**(-2))
         pi = ((((a+b)/(a-b) + (2/(b-a))*x) - alphak)*ret[-1]-betak*ret[-2])
-        # pi =math.sqrt(2/(b-a))*pi
+        # pi = math.sqrt(2/(b-a))*pi
         ret.append(pi)
-    return np.array(ret[1:])
+    ret = np.array(ret[1:]) * math.sqrt(2/(b-a))
+    return ret
 
 
 def legendre_normal_int(x, n, a, b):
-    ret = [np.zeros(len(x)), np.ones(len(x))]
+    beta0 = 2
+    ret = [np.zeros(x.shape), np.ones(x.shape)/math.sqrt(beta0)]
     alphak = 0
+
+    betak = 1/(4-(1)**(-2))
+
+    pi = ((((a+b)/(a-b) + 2/(b-a)*x) - alphak) *
+          ret[-1] - math.sqrt(beta0) * ret[-2])/math.sqrt(betak)
+    ret.append(pi)
     for k in range(2, n+1):
         betak_minus_one = 1/(4-(k-1)**(-2))
-        betak = 1/(4-(k-1)**(-2))
+        betak = 1/(4-(k)**(-2))
 
         pi = ((((a+b)/(a-b) + 2/(b-a)*x) - alphak) *
               ret[-1] - math.sqrt(betak_minus_one) * ret[-2])/math.sqrt(betak)
         # pi = math.sqrt(2/(b-a))*pi
         ret.append(pi)
-    return np.array(ret[1:])
+    ret = np.array(ret[1:]) * math.sqrt(2/(b-a))
+    return ret
 
 
 def nodes_weights(n):

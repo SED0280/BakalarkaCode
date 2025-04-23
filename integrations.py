@@ -135,15 +135,14 @@ def generate2DLegendre(x, y, n):
 def quadrature_2d(f, nx, ny):
     xnodes, xweights = nodes_weights(nx)
     ynodes, yweights = nodes_weights(ny)
+    xnodes, ynodes = np.meshgrid(xnodes, ynodes)
 
-    return sum(xweights*yweights*f(xnodes, ynodes))
+    return yweights @ f(xnodes, ynodes) @ xweights
 
 
 def quadrature_2d_int(f, nx, ny, a, b, c, d):
     xnodes, xweights = nodes_weights_int(nx, a, b)
     ynodes, yweights = nodes_weights_int(ny, c, d)
+    xnodes, ynodes = np.meshgrid(xnodes, ynodes)
 
-    Xnodes, Ynodes = np.meshgrid(xnodes, ynodes)
-    Xweights, Yweights = np.meshgrid(xweights, yweights)
-
-    return sum(sum(Xweights*Yweights*f(Xnodes, Ynodes)))
+    return yweights @ f(xnodes, ynodes) @ xweights

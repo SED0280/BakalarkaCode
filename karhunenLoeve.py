@@ -2,7 +2,7 @@ import numpy as np
 import integrations as integ
 
 
-def get_eigenfuntions(x, C, poly_count, node_count):
+def get_eigenpairs(x, C, poly_count, node_count):
     def legnorm(x): return integ.legendre_normal(x, poly_count)
     nodes, weights = integ.nodes_weights(node_count)
 
@@ -28,7 +28,7 @@ def get_eigenfuntions(x, C, poly_count, node_count):
     eigenvectors_functions = (np.einsum(
         'ijk,in->njk', V, eigenvectors, optimize=True).T * np.sqrt(
         np.maximum(eigenvalues, 0))).T
-    return eigenvectors_functions
+    return eigenvalues, eigenvectors_functions
 
 
 def sample_normal(eigenfunctions):
